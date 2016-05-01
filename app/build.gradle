@@ -1,17 +1,41 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+ext {
+    getAppVersionCode = {
+        def output = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', 'HEAD', '--count'
+            standardOutput = output
+        }
+        return output.toString().trim().toInteger()
+    }
+}
+
+def appVersionCode = getAppVersionCode();
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.mateuszbartos.kotlinboilerplate"
-        minSdkVersion 16
+        minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName "0.1.0"
     }
+
+    productFlavors {
+        base {
+            minSdkVersion 14
+        }
+
+        dev {
+            minSdkVersion 21
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
